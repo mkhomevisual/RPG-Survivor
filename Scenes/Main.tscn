@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=3 uid="uid://nb3wxvil2x6j"]
 
 [ext_resource type="Script" uid="uid://dpw5ogksace1y" path="res://Scripts/main.gd" id="1_kln2b"]
-[ext_resource type="PackedScene" uid="uid://csgfe5ptvwgw5" path="res://Scenes/player.tscn" id="1_r150o"]
 [ext_resource type="Script" uid="uid://deowb0tstwni6" path="res://Scripts/spawner.gd" id="3_kln2b"]
 [ext_resource type="PackedScene" uid="uid://dr22rnpbongxl" path="res://Scenes/enemy.tscn" id="4_jw32o"]
 [ext_resource type="Texture2D" uid="uid://b6rrkmjg8vac1" path="res://Assets/Enviroment/Floorer.png" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://tkq7s05faq21" path="res://Scenes/enemy_shooter.tscn" id="5_50glp"]
 [ext_resource type="PackedScene" uid="uid://b6vkmwji08gff" path="res://Scenes/enemy_tank.tscn" id="6_vy5pj"]
+[ext_resource type="PackedScene" uid="uid://buckx68j4snqk" path="res://Scenes/player_ashe.tscn" id="7_jw32o"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pbw6q"]
 font_size = 20
@@ -24,9 +24,8 @@ font_size = 80
 scale = Vector2(0.970332, 1)
 script = ExtResource("1_kln2b")
 
-[node name="Player" parent="." instance=ExtResource("1_r150o")]
-position = Vector2(17.82, 0)
-skill_e_cooldown = 2.0
+[node name="Player" parent="." instance=ExtResource("7_jw32o")]
+scale = Vector2(1, 1)
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("3_kln2b")
