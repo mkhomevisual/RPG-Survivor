@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://dr22rnpbongxl"]
+
+[ext_resource type="Script" uid="uid://bhtlttbbbthcs" path="res://Scripts/enemy.gd" id="1_1f0kj"]
+[ext_resource type="Texture2D" uid="uid://dhro17fdudecw" path="res://Assets/Enemy/m1.png" id="2_287tu"]
+[ext_resource type="Texture2D" uid="uid://d3h7rxgbqdhro" path="res://Assets/Enemy/m2.png" id="3_0830c"]
+[ext_resource type="Texture2D" uid="uid://dswpr1v08hnc4" path="res://Assets/Enemy/Ghost.png" id="4_287tu"]
+[ext_resource type="Texture2D" uid="uid://bcc4lr64mepjh" path="res://Assets/Enemy/White-Shadow.png" id="5_0830c"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ghaa6"]
+animations = [{
+"frames": [{
+"duration": 3.0,
+"texture": ExtResource("2_287tu")
+}, {
+"duration": 3.0,
+"texture": ExtResource("3_0830c")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1f0kj"]
+size = Vector2(88.8889, 71.1111)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_afpow"]
+size = Vector2(91.1111, 71.1111)
+
+[node name="Enemy" type="CharacterBody2D" groups=["enemy"]]
+scale = Vector2(0.1, 0.1)
+script = ExtResource("1_1f0kj")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+scale = Vector2(0.29, 0.29)
+sprite_frames = SubResource("SpriteFrames_ghaa6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.92059e-06, 5.96046e-07)
+scale = Vector2(0.995, 1.46)
+shape = SubResource("RectangleShape2D_1f0kj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.27, 0.27)
+texture = ExtResource("4_287tu")
+
+[node name="DamageArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(-1.11111, -1.05964e-06)
+scale = Vector2(1.215, 1.955)
+shape = SubResource("RectangleShape2D_afpow")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+z_index = -4
+position = Vector2(0, 80)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("5_0830c")

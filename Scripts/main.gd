@@ -1,0 +1,163 @@
+extends Node2D  # Root scény
+
+# -------- SCORE --------
+var score: int = 0  # Celkové skóre
+
+# -------- XP / LEVEL --------
+var xp: int = 0                 # Aktuální XP
+var level: int = 1              # Aktuální level
+@export var xp_to_next_level: int = 5         # XP potřeba na další level
+@export var xp_level_multiplier: float = 1.5  # Násobení XP potřeby po levelu
+
+# -------- STATY PRO LEVEL-UP --------
+enum StatUpgrade {
+	ATTACK_SPEED,
+	ATTACK_DAMAGE,
+	MAX_HEALTH,
+	BULLET_SPEED,
+	MOVEMENT_SPEED,
+	PICKUP_RADIUS
+}
+
+var _stat_choice_btn1: int = StatUpgrade.ATTACK_SPEED
+var _stat_choice_btn2: int = StatUpgrade.ATTACK_DAMAGE
+
+# -------- UI NODES --------
+@onready var _score_label: Label = $UI/ScoreLabel
+@onready var _level_label: Label = $UI/LevelLabel
+@onready var _health_label: Label = $UI/HealthLabel
+
+@onready var _level_panel: Panel = $UI/LevelUpPanel
+@onready var _btn_speed: Button = $UI/LevelUpPanel/Layout/ButtonSpeed
+@onready var _btn_damage: Button = $UI/LevelUpPanel/Layout/ButtonDamage
+@onready var _levelup_label: Label = $UI/LevelUpPanel/Layout/LevelUpLabel
+
+
+func _ready() -> void:
+	_level_panel.visible = false
+
+	_btn_speed.pressed.connect(_on_button_speed_pressed)
+	_btn_damage.pressed.connect(_on_button_damage_pressed)
+
+	_update_score_label()
+	_update_level_label()
+	# HealthLabel nastaví Player přes update_player_health()
+
+
+# -------- SCORE API (volá Enemy) --------
+func add_score(amount: int) -> void:
+	score += amount
+	_update_score_label()
+
+
+func _update_score_label() -> void:
+	_score_label.text = "Score: %d" % score
+
+
+# -------- XP / LEVEL API (volá XPCrystal) --------
+func add_xp(amount: int) -> void:
+	xp += amount
+
+	while xp >= xp_to_next_level:
+		xp -= xp_to_next_level
+		level += 1
+		xp_to_next_level = int(float(xp_to_next_level) * xp_level_multiplier)
+		_show_stats_levelup()
+
+	_update_level_label()
+
+
+func _update_level_label() -> void:
+	_level_label.text = "Level: %d  XP: %d/%d" % [level, xp, xp_to_next_level]
+
+
+# -------- HEALTH API (volá Player) --------
+func update_player_health(hp: int, max_hp: int) -> void:
+	_health_label.text = "HP: %d / %d" % [hp, max_hp]
+
+
+# -------- LEVEL-UP PANEL --------
+
+func _open_levelup_panel() -> void:
+	_level_panel.visible = true
+	get_tree().paused = true   # pauza hry během výběru
+
+
+func _close_levelup_panel() -> void:
+	_level_panel.visible = false
+	get_tree().paused = false  # odpauzujeme hru
+
+
+func _show_stats_levelup() -> void:
+	_levelup_label.text = "LEVEL UP! Vyber upgrade statů:"
+
+	var all_stats := [
+		StatUpgrade.ATTACK_SPEED,
+		StatUpgrade.ATTACK_DAMAGE,
+		StatUpgrade.MAX_HEALTH,
+		StatUpgrade.BULLET_SPEED,
+		StatUpgrade.MOVEMENT_SPEED,
+		StatUpgrade.PICKUP_RADIUS
+	]
+	all_stats.shuffle()
+	_stat_choice_btn1 = all_stats[0]
+	_stat_choice_btn2 = all_stats[1]
+
+	_btn_speed.text = _get_stat_label(_stat_choice_btn1)
+	_btn_damage.text = _get_stat_label(_stat_choice_btn2)
+
+	_open_levelup_panel()
+
+
+func _get_stat_label(stat: int) -> String:
+	match stat:
+		StatUpgrade.ATTACK_SPEED:
+			return "Rychlost střelby +"
+		StatUpgrade.ATTACK_DAMAGE:
+			return "Poškození střel +"
+		StatUpgrade.MAX_HEALTH:
+			return "Maximální zdraví +"
+		StatUpgrade.BULLET_SPEED:
+			return "Rychlost projektilů +"
+		StatUpgrade.MOVEMENT_SPEED:
+			return "Rychlost pohybu +"
+		StatUpgrade.PICKUP_RADIUS:
+			return "Dosah sbírání XP +"
+		_:
+			return "Upgrade"
+
+
+func _apply_stat_upgrade(player: Node, stat: int) -> void:
+	match stat:
+		StatUpgrade.ATTACK_SPEED:
+			if player.has_method("upgrade_attack_speed"):
+				player.upgrade_attack_speed()
+		StatUpgrade.ATTACK_DAMAGE:
+			if player.has_method("upgrade_attack_damage"):
+				player.upgrade_attack_damage()
+		StatUpgrade.MAX_HEALTH:
+			if player.has_method("upgrade_max_health"):
+				player.upgrade_max_health()
+		StatUpgrade.BULLET_SPEED:
+			if player.has_method("upgrade_bullet_speed"):
+				player.upgrade_bullet_speed()
+		StatUpgrade.MOVEMENT_SPEED:
+			if player.has_method("upgrade_movement_speed"):
+				player.upgrade_movement_speed()
+		StatUpgrade.PICKUP_RADIUS:
+			if player.has_method("upgrade_pickup_radius"):
+				player.upgrade_pickup_radius()
+
+
+# -------- REAKCE NA BUTTONY --------
+
+func _on_button_speed_pressed() -> void:
+	var player := $Player
+	_apply_stat_upgrade(player, _stat_choice_btn1)
+	_close_levelup_panel()
+
+
+func _on_button_damage_pressed() -> void:
+	var player := $Player
+	_apply_stat_upgrade(player, _stat_choice_btn2)
+	_close_levelup_panel()

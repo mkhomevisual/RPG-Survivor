@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://djwlcvusgmm1g"]
+
+[ext_resource type="Texture2D" uid="uid://c1epbi2ubr4kf" path="res://Assets/Enemy/wizard-backglow.png" id="1_mh5eo"]
+[ext_resource type="Script" uid="uid://cs2wpwqq3i6i1" path="res://Scenes/tower.gd" id="1_tghyl"]
+[ext_resource type="Texture2D" uid="uid://dvqfdv6xjibff" path="res://Assets/Skills/Tower.png" id="2_tghyl"]
+
+[node name="Node2D" type="Node2D"]
+scale = Vector2(0.15, 0.15)
+script = ExtResource("1_tghyl")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture = ExtResource("1_mh5eo")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 10
+texture = ExtResource("2_tghyl")

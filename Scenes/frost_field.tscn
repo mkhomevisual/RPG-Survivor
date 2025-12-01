@@ -1,0 +1,173 @@
+[gd_scene load_steps=34 format=3 uid="uid://imv0wq0x5tog"]
+
+[ext_resource type="Script" uid="uid://b28wsqtwv526" path="res://Scripts/frostfield.gd" id="1_fu5qo"]
+[ext_resource type="Texture2D" uid="uid://b645vwgta8sfe" path="res://Assets/Skills/q2/Comp 2/Comp 2_00000.png" id="2_gnmr1"]
+[ext_resource type="Texture2D" uid="uid://calt1dbd8iphy" path="res://Assets/Skills/q2/Comp 2/Comp 2_00001.png" id="3_ihkge"]
+[ext_resource type="Texture2D" uid="uid://wad6f0a5usep" path="res://Assets/Skills/q2/Comp 2/Comp 2_00002.png" id="4_qjics"]
+[ext_resource type="Texture2D" uid="uid://4swibo010fom" path="res://Assets/Skills/q2/Comp 2/Comp 2_00003.png" id="5_r4qda"]
+[ext_resource type="Texture2D" uid="uid://dr5cwdarcwiyb" path="res://Assets/Skills/q2/Comp 2/Comp 2_00004.png" id="6_nonc1"]
+[ext_resource type="Texture2D" uid="uid://bkfmmsh7dqj8k" path="res://Assets/Skills/q2/Comp 2/Comp 2_00005.png" id="7_hk050"]
+[ext_resource type="Texture2D" uid="uid://c2s4gljy5fmkv" path="res://Assets/Skills/q2/Comp 2/Comp 2_00006.png" id="8_7uy8q"]
+[ext_resource type="Texture2D" uid="uid://dgestxjmoj7gu" path="res://Assets/Skills/q2/Comp 2/Comp 2_00007.png" id="9_63a04"]
+[ext_resource type="Texture2D" uid="uid://dpmcfh6wcldlp" path="res://Assets/Skills/q2/Comp 2/Comp 2_00008.png" id="10_c85iw"]
+[ext_resource type="Texture2D" uid="uid://bd56lenbc8qhc" path="res://Assets/Skills/q2/Comp 2/Comp 2_00009.png" id="11_l6ua5"]
+[ext_resource type="Texture2D" uid="uid://b1eogplhmwn4w" path="res://Assets/Skills/q2/Comp 2/Comp 2_00010.png" id="12_ksick"]
+[ext_resource type="Texture2D" uid="uid://djdsyes563jbs" path="res://Assets/Skills/q2/Comp 2/Comp 2_00011.png" id="13_opj5t"]
+[ext_resource type="Texture2D" uid="uid://bsq8hcn7rsksy" path="res://Assets/Skills/q2/Comp 2/Comp 2_00012.png" id="14_o6ars"]
+[ext_resource type="Texture2D" uid="uid://dopgxgdfy2iqr" path="res://Assets/Skills/q2/Comp 2/Comp 2_00013.png" id="15_wmc8f"]
+[ext_resource type="Texture2D" uid="uid://d1o5e1gklnbe" path="res://Assets/Skills/q2/Comp 2/Comp 2_00014.png" id="16_6vpdd"]
+[ext_resource type="Texture2D" uid="uid://db180ep8b8jts" path="res://Assets/Skills/q2/Comp 2/Comp 2_00015.png" id="17_bqoci"]
+[ext_resource type="Texture2D" uid="uid://impmx50s2tvi" path="res://Assets/Skills/q2/Comp 2/Comp 2_00016.png" id="18_n0xtx"]
+[ext_resource type="Texture2D" uid="uid://dx74061t62ld4" path="res://Assets/Skills/q2/Comp 2/Comp 2_00017.png" id="19_61b1s"]
+[ext_resource type="Texture2D" uid="uid://cbpijbxutq3ht" path="res://Assets/Skills/q2/Comp 2/Comp 2_00018.png" id="20_rwfhm"]
+[ext_resource type="Texture2D" uid="uid://6h1i5gqgfbv0" path="res://Assets/Skills/q2/Comp 2/Comp 2_00019.png" id="21_vw1yw"]
+[ext_resource type="Texture2D" uid="uid://8h60qy12ci84" path="res://Assets/Skills/q2/Comp 2/Comp 2_00020.png" id="22_kyvrw"]
+[ext_resource type="Texture2D" uid="uid://bp63vn82ya8fr" path="res://Assets/Skills/q2/Comp 2/Comp 2_00021.png" id="23_2uq75"]
+[ext_resource type="Texture2D" uid="uid://bodh471yajgvr" path="res://Assets/Skills/q2/Comp 2/Comp 2_00022.png" id="24_cpa2f"]
+[ext_resource type="Texture2D" uid="uid://cmp2fygspmkto" path="res://Assets/Skills/q2/Comp 2/Comp 2_00023.png" id="25_hyq2u"]
+[ext_resource type="Texture2D" uid="uid://dsr4ugdd1bsno" path="res://Assets/Skills/q2/Comp 2/Comp 2_00024.png" id="26_c430o"]
+[ext_resource type="Texture2D" uid="uid://065cqllrdpwe" path="res://Assets/Skills/q2/Comp 2/Comp 2_00025.png" id="27_stijm"]
+[ext_resource type="Texture2D" uid="uid://buy80sytld74x" path="res://Assets/Skills/q2/Comp 2/Comp 2_00026.png" id="28_kfi0u"]
+[ext_resource type="Texture2D" uid="uid://bln13i2yy5sy5" path="res://Assets/Skills/q2/Comp 2/Comp 2_00027.png" id="29_70282"]
+[ext_resource type="Texture2D" uid="uid://cldc0q46h1vrt" path="res://Assets/Skills/q2/Comp 2/Comp 2_00028.png" id="30_8ryqa"]
+[ext_resource type="Texture2D" uid="uid://khkjgeml2f1d" path="res://Assets/Skills/q2/Comp 2/Comp 2_00029.png" id="31_0uul3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bakru"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ffxa"]
+animations = [{
+"frames": [{
+"duration": 0.2,
+"texture": ExtResource("2_gnmr1")
+}, {
+"duration": 0.2,
+"texture": ExtResource("3_ihkge")
+}, {
+"duration": 0.2,
+"texture": ExtResource("4_qjics")
+}, {
+"duration": 0.2,
+"texture": ExtResource("5_r4qda")
+}, {
+"duration": 0.2,
+"texture": ExtResource("6_nonc1")
+}, {
+"duration": 0.2,
+"texture": ExtResource("7_hk050")
+}, {
+"duration": 0.2,
+"texture": ExtResource("8_7uy8q")
+}, {
+"duration": 0.2,
+"texture": ExtResource("9_63a04")
+}, {
+"duration": 0.2,
+"texture": ExtResource("10_c85iw")
+}, {
+"duration": 0.2,
+"texture": ExtResource("11_l6ua5")
+}, {
+"duration": 0.2,
+"texture": ExtResource("12_ksick")
+}, {
+"duration": 0.2,
+"texture": ExtResource("13_opj5t")
+}, {
+"duration": 0.2,
+"texture": ExtResource("14_o6ars")
+}, {
+"duration": 0.2,
+"texture": ExtResource("15_wmc8f")
+}, {
+"duration": 0.2,
+"texture": ExtResource("16_6vpdd")
+}, {
+"duration": 0.2,
+"texture": ExtResource("17_bqoci")
+}, {
+"duration": 0.2,
+"texture": ExtResource("18_n0xtx")
+}, {
+"duration": 0.2,
+"texture": ExtResource("19_61b1s")
+}, {
+"duration": 0.2,
+"texture": ExtResource("20_rwfhm")
+}, {
+"duration": 0.2,
+"texture": ExtResource("21_vw1yw")
+}, {
+"duration": 0.2,
+"texture": ExtResource("22_kyvrw")
+}, {
+"duration": 0.2,
+"texture": ExtResource("23_2uq75")
+}, {
+"duration": 0.2,
+"texture": ExtResource("24_cpa2f")
+}, {
+"duration": 0.2,
+"texture": ExtResource("25_hyq2u")
+}, {
+"duration": 0.2,
+"texture": ExtResource("26_c430o")
+}, {
+"duration": 0.2,
+"texture": ExtResource("27_stijm")
+}, {
+"duration": 0.2,
+"texture": ExtResource("28_kfi0u")
+}, {
+"duration": 0.2,
+"texture": ExtResource("29_70282")
+}, {
+"duration": 0.2,
+"texture": ExtResource("30_8ryqa")
+}, {
+"duration": 0.2,
+"texture": ExtResource("31_0uul3")
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="FrostFieldArea" type="Area2D"]
+scale = Vector2(0.15, 0.15)
+script = ExtResource("1_fu5qo")
+pull_strength = 100.0
+frost_duration = 8.0
+effect_radius = 60.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(36.3806, 36.435)
+shape = SubResource("CircleShape2D_bakru")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2.065, 2.065)
+sprite_frames = SubResource("SpriteFrames_0ffxa")
+frame_progress = 0.0959915
