@@ -16,7 +16,7 @@ extends CharacterBody2D  # Player
 @export var skill_e_cooldown: float = 3.0
 @export var skill_e_damage: int = 8
 @export var skill_e_range: float = 2000.0
-@export var skill_e_scene: PackedScene = preload("res://Scenes/skill_e_projectile.tscn")
+@export var skill_e_scene: PackedScene = preload("res://Scenes/skill_e_bullet.tscn")
 
 # -------- SKILL R (TOWER) --------
 @export var skill_r_cooldown: float = 10.0
@@ -31,9 +31,13 @@ var hp: int = 0
 # Bullet speed (stat) – multiplikátor
 var bullet_speed_multiplier: float = 1.0
 
-# Augment flagy
-var has_pierce: bool = false
-var has_split: bool = false
+# Bullet loadout modifiers
+@export var bullet_modifiers: Dictionary = {
+        "pierce_count": 0,
+        "split_generations": 0,
+        "chain_jumps": 0,
+        "chain_range": 200.0,
+}
 
 # Cooldowny skillů
 var _skill_q_cd_left: float = 0.0
@@ -137,24 +141,39 @@ func _shoot_bullet(target_pos: Vector2) -> void:
 
 	bullet.global_position = global_position
 
-	var dir: Vector2 = target_pos - global_position
+        var dir: Vector2 = target_pos - global_position
 
-	if bullet.has_method("set_direction"):
-		bullet.set_direction(dir)
-	if bullet.has_method("set_damage"):
-		bullet.set_damage(attack_damage)
-	if bullet.has_method("set_speed_multiplier"):
-		bullet.set_speed_multiplier(bullet_speed_multiplier)
+        if bullet.has_method("set_direction"):
+                bullet.set_direction(dir)
+        if bullet.has_method("set_damage"):
+                bullet.set_damage(attack_damage)
+        _apply_bullet_modifiers(bullet)
 
-	if has_pierce and bullet.has_method("set_pierce"):
-		bullet.set_pierce(1)
-	if has_split and bullet.has_method("set_split"):
-		bullet.set_split(true, 1)
+        _play_shoot_glow()
 
-	if has_pierce or has_split:
-		print("Bullet fired with augments -> pierce:", has_pierce, " split:", has_split)
 
-	_play_shoot_glow()
+func _apply_bullet_modifiers(bullet: Node) -> void:
+        if bullet.has_method("set_speed_multiplier"):
+                bullet.set_speed_multiplier(bullet_speed_multiplier)
+
+        var pierce := int(bullet_modifiers.get("pierce_count", 0))
+        var split_generations := int(bullet_modifiers.get("split_generations", 0))
+        var chain_jumps := int(bullet_modifiers.get("chain_jumps", 0))
+        var chain_range := float(bullet_modifiers.get("chain_range", 200.0))
+
+        for child in bullet.get_children():
+                if child is PierceEffect:
+                        child.pierce_count = pierce
+                if child is SplitEffect:
+                        child.generations = split_generations
+                        child.bullet_scene = _bullet_scene
+                if child is ChainEffect:
+                        child.chain_jumps = chain_jumps
+                        child.chain_range = chain_range
+                        child.bullet_scene = _bullet_scene
+
+        if pierce > 0 or split_generations > 0 or chain_jumps > 0:
+                print("Bullet fired with modifiers -> pierce:", pierce, " split gen:", split_generations, " chain jumps:", chain_jumps)
 
 
 # -------- SKILLY (Q / E / R) --------
@@ -217,16 +236,16 @@ func _cast_skill_e() -> void:
 	proj.global_position = global_position
 
 	var mouse_pos: Vector2 = get_global_mouse_position()
-	var dir: Vector2 = mouse_pos - global_position
+        var dir: Vector2 = mouse_pos - global_position
 
-	if proj.has_method("set_direction"):
-		proj.set_direction(dir)
-	if proj.has_method("set_damage"):
-		proj.set_damage(skill_e_damage)
-	if proj.has_method("set_max_range"):
-		proj.set_max_range(skill_e_range)
+        if proj.has_method("set_direction"):
+                proj.set_direction(dir)
+        if proj.has_method("set_damage"):
+                proj.set_damage(skill_e_damage)
+        if proj.has_method("set_speed_multiplier"):
+                proj.set_speed_multiplier(bullet_speed_multiplier)
 
-	print("Skill E cast dir: ", dir)
+        print("Skill E cast dir: ", dir, " damage:", skill_e_damage)
 
 
 # --- R: SUMMON TOWER ---
@@ -322,19 +341,22 @@ func upgrade_max_health() -> void:
 
 
 func upgrade_bullet_speed() -> void:
-	bullet_speed_multiplier *= 1.15
+        bullet_speed_multiplier *= 1.15
 
 
 # -------- AUGMENTY --------
+func set_bullet_modifiers(modifiers: Dictionary) -> void:
+        bullet_modifiers = modifiers.duplicate(true)
+        if not bullet_modifiers.has("chain_range"):
+            bullet_modifiers["chain_range"] = 200.0
+        print("Bullet modifiers updated from loadout:", bullet_modifiers)
+
+
 func add_augment_pierce() -> void:
-	if has_pierce:
-		return
-	has_pierce = true
-	print("AUGMENT ACQUIRED: PIERCE")
+        bullet_modifiers["pierce_count"] = int(bullet_modifiers.get("pierce_count", 0)) + 1
+        print("AUGMENT ACQUIRED: PIERCE (pierce_count=", bullet_modifiers["pierce_count"], ")")
 
 
 func add_augment_split() -> void:
-	if has_split:
-		return
-	has_split = true
-	print("AUGMENT ACQUIRED: SPLIT")
+        bullet_modifiers["split_generations"] = int(bullet_modifiers.get("split_generations", 0)) + 1
+        print("AUGMENT ACQUIRED: SPLIT (generations=", bullet_modifiers["split_generations"], ")")

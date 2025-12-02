@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://c82xkss2ml8q2"]
+[gd_scene load_steps=6 format=3 uid="uid://c82xkss2ml8q2"]
 
-[ext_resource type="Script" uid="uid://yqnqo47x4jd8" path="res://Scripts/bullet.gd" id="1_upmcl"]
+[ext_resource type="Script" path="res://Scripts/Bullets/BulletBase.gd" id="1_upmcl"]
+[ext_resource type="Script" path="res://Scripts/Bullets/PierceEffect.gd" id="2_pierce"]
+[ext_resource type="Script" path="res://Scripts/Bullets/SplitEffect.gd" id="3_split"]
 [ext_resource type="Texture2D" uid="uid://cpqpo77wo711o" path="res://Assets/Enemy/attackorb.png" id="2_vykw8"]
 [ext_resource type="Texture2D" uid="uid://0tl11dr8ec75" path="res://Assets/Enemy/Orb-Backlight.png" id="3_43wr3"]
 
@@ -23,3 +25,9 @@ texture = ExtResource("2_vykw8")
 z_index = -3
 scale = Vector2(0.045, 0.045)
 texture = ExtResource("3_43wr3")
+
+[node name="PierceEffect" type="Node" parent="."]
+script = ExtResource("2_pierce")
+
+[node name="SplitEffect" type="Node" parent="."]
+script = ExtResource("3_split")
