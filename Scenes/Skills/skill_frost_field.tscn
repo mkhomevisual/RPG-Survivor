@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Player/SkillFrostField.gd" id="1_jc8l3"]
+
+[node name="SkillFrostField" type="Node"]
+script = ExtResource("1_jc8l3")
+cooldown = 2.0

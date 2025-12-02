@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="PlayerLoadout" load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://Scenes/bullet.tscn" id="1_nwhd3"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerLoadout.gd" id="1_smn5w"]
+[ext_resource type="PackedScene" path="res://Scenes/Skills/skill_frost_field.tscn" id="2_nqsgc"]
+[ext_resource type="PackedScene" path="res://Scenes/Skills/skill_ezreal_projectile.tscn" id="3_rnltk"]
+[ext_resource type="PackedScene" path="res://Scenes/Skills/skill_tower.tscn" id="4_pjhi7"]
+
+[resource]
+script = ExtResource("1_smn5w")
+projectile_scene = ExtResource("1_nwhd3")
+attack_damage = 1
+fire_cooldown = 0.2
+min_fire_cooldown = 0.05
+shoot_glow_duration = 0.12
+auto_target_radius = 250.0
+max_hp = 5
+skill_scene_paths = [
+"res://Scenes/Skills/skill_frost_field.tscn",
+"res://Scenes/Skills/skill_ezreal_projectile.tscn",
+"res://Scenes/Skills/skill_tower.tscn"
+]
