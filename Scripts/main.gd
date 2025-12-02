@@ -26,6 +26,17 @@ var _stat_choice_btn2: int = StatUpgrade.ATTACK_DAMAGE
 @onready var _score_label: Label = $UI/ScoreLabel
 @onready var _level_label: Label = $UI/LevelLabel
 @onready var _health_label: Label = $UI/HealthLabel
+@onready var _skill_bar: HBoxContainer = $UI/SkillPanel/SkillBar
+@onready var _skill_icons: Dictionary = {
+        "Q": $UI/SkillPanel/SkillBar/SkillQ/Icon,
+        "E": $UI/SkillPanel/SkillBar/SkillE/Icon,
+        "R": $UI/SkillPanel/SkillBar/SkillR/Icon,
+}
+@onready var _skill_labels: Dictionary = {
+        "Q": $UI/SkillPanel/SkillBar/SkillQ/CooldownLabel,
+        "E": $UI/SkillPanel/SkillBar/SkillE/CooldownLabel,
+        "R": $UI/SkillPanel/SkillBar/SkillR/CooldownLabel,
+}
 
 @onready var _level_panel: Panel = $UI/LevelUpPanel
 @onready var _btn_speed: Button = $UI/LevelUpPanel/Layout/ButtonSpeed
@@ -34,14 +45,15 @@ var _stat_choice_btn2: int = StatUpgrade.ATTACK_DAMAGE
 
 
 func _ready() -> void:
-	_level_panel.visible = false
+        _level_panel.visible = false
 
-	_btn_speed.pressed.connect(_on_button_speed_pressed)
-	_btn_damage.pressed.connect(_on_button_damage_pressed)
+        _btn_speed.pressed.connect(_on_button_speed_pressed)
+        _btn_damage.pressed.connect(_on_button_damage_pressed)
 
-	_update_score_label()
-	_update_level_label()
-	# HealthLabel nastaví Player přes update_player_health()
+        _update_score_label()
+        _update_level_label()
+        # HealthLabel nastaví Player přes update_player_health()
+        _reset_skill_ui()
 
 
 # -------- SCORE API (volá Enemy) --------
@@ -73,7 +85,28 @@ func _update_level_label() -> void:
 
 # -------- HEALTH API (volá Player) --------
 func update_player_health(hp: int, max_hp: int) -> void:
-	_health_label.text = "HP: %d / %d" % [hp, max_hp]
+        _health_label.text = "HP: %d / %d" % [hp, max_hp]
+
+
+func update_skill_cooldown(slot_name: String, cooldown_left: float, cooldown_total: float, icon_path: String) -> void:
+        if not _skill_labels.has(slot_name):
+                return
+
+        var label: Label = _skill_labels[slot_name]
+        if cooldown_left <= 0.0:
+                label.text = "%s: Ready" % slot_name
+        else:
+                label.text = "%s: %.1fs" % [slot_name, cooldown_left]
+
+        if _skill_icons.has(slot_name):
+                var icon_rect: TextureRect = _skill_icons[slot_name]
+                if icon_rect != null and icon_rect.texture == null and icon_path != "":
+                        icon_rect.texture = load(icon_path)
+
+
+func _reset_skill_ui() -> void:
+        for slot_name in _skill_labels.keys():
+                update_skill_cooldown(slot_name, 0.0, 0.0, "")
 
 
 # -------- LEVEL-UP PANEL --------
