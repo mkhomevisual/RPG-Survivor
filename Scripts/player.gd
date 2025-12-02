@@ -31,6 +31,9 @@ var hp: int = 0
 # Bullet speed (stat) – multiplikátor
 var bullet_speed_multiplier: float = 1.0
 
+# XP pickup radius multiplikátor
+var pickup_radius_multiplier: float = 1.0
+
 # Augment flagy
 var has_pierce: bool = false
 var has_split: bool = false
@@ -322,7 +325,19 @@ func upgrade_max_health() -> void:
 
 
 func upgrade_bullet_speed() -> void:
-	bullet_speed_multiplier *= 1.15
+        bullet_speed_multiplier *= 1.15
+
+
+func upgrade_movement_speed() -> void:
+        speed *= 1.10
+
+
+func upgrade_pickup_radius() -> void:
+        pickup_radius_multiplier *= 1.25
+
+
+func get_pickup_radius_multiplier() -> float:
+        return pickup_radius_multiplier
 
 
 # -------- AUGMENTY --------
