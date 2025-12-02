@@ -1,12 +1,19 @@
 extends CharacterBody2D  # Player
 
+const PlayerLoadout := preload("res://Scripts/player_loadout.gd")
+
 # -------- EXPORT ZÁKLAD --------
-@export var speed: float = 50.0
-@export var fire_cooldown: float = 0.2
-@export var min_fire_cooldown: float = 0.05
+@export var default_move_speed: float = 50.0
+@export var default_fire_cooldown: float = 0.2
+@export var default_min_fire_cooldown: float = 0.05
+@export var default_attack_damage: int = 1
+@export var default_bullet_speed_multiplier: float = 1.0
+@export var default_pickup_radius_multiplier: float = 1.0
 @export var max_hp: int = 5
 @export var shoot_glow_duration: float = 0.12
 @export var auto_target_radius: float = 250.0
+
+@export var starting_loadout: PlayerLoadout
 
 # -------- SKILL Q (FROST FIELD) --------
 @export var skill_q_cooldown: float = 2.0
@@ -23,17 +30,19 @@ extends CharacterBody2D  # Player
 @export var tower_scene: PackedScene = preload("res://Scenes/tower.tscn")
 @export var tower_max_cast_range: float = 500.0
 
-# -------- STAV --------
+# -------- LOADOUT / STAV --------
+var loadout: PlayerLoadout
+var move_speed: float = 0.0
 var attack_damage: int = 1
-var _time_since_shot: float = 0.0
-var hp: int = 0
-
-# Bullet speed (stat) – multiplikátor
 var bullet_speed_multiplier: float = 1.0
-
-# Augment flagy
+var pickup_radius_multiplier: float = 1.0
 var has_pierce: bool = false
 var has_split: bool = false
+var fire_cooldown: float = 0.2
+var min_fire_cooldown: float = 0.05
+
+var _time_since_shot: float = 0.0
+var hp: int = 0
 
 # Cooldowny skillů
 var _skill_q_cd_left: float = 0.0
@@ -49,9 +58,11 @@ var _shoot_glow_time: float = 0.0
 
 
 func _ready() -> void:
-	add_to_group("player")
+        add_to_group("player")
 
-	hp = max_hp
+        _initialize_loadout()
+
+        hp = max_hp
 
 	# připravíme glow
 	if _shoot_glow:
@@ -60,41 +71,84 @@ func _ready() -> void:
 		c.a = 0.0
 		_shoot_glow.modulate = c
 
-	var world := get_tree().current_scene
-	if world.has_method("update_player_health"):
-		world.call_deferred("update_player_health", hp, max_hp)
+        var world := get_tree().current_scene
+        if world.has_method("update_player_health"):
+                world.call_deferred("update_player_health", hp, max_hp)
+
+
+func _initialize_loadout() -> void:
+        if starting_loadout != null:
+                loadout = starting_loadout.duplicate_loadout()
+        else:
+                loadout = _build_default_loadout()
+
+        _apply_loadout(loadout)
+
+
+func _build_default_loadout() -> PlayerLoadout:
+        var l := PlayerLoadout.new()
+        l.move_speed = default_move_speed
+        l.fire_cooldown = default_fire_cooldown
+        l.min_fire_cooldown = default_min_fire_cooldown
+        l.attack_damage = default_attack_damage
+        l.bullet_speed_multiplier = default_bullet_speed_multiplier
+        l.pickup_radius_multiplier = default_pickup_radius_multiplier
+        return l
+
+
+func _apply_loadout(l: PlayerLoadout) -> void:
+        if l == null:
+                return
+
+        move_speed = l.move_speed
+        fire_cooldown = l.fire_cooldown
+        min_fire_cooldown = l.min_fire_cooldown
+        attack_damage = l.attack_damage
+        bullet_speed_multiplier = l.bullet_speed_multiplier
+        pickup_radius_multiplier = l.pickup_radius_multiplier
+        has_pierce = l.has_pierce
+        has_split = l.has_split
+
+
+func equip_loadout(new_loadout: PlayerLoadout) -> void:
+        if new_loadout == null:
+                return
+
+        loadout = new_loadout.duplicate_loadout()
+        _apply_loadout(loadout)
 
 
 func _physics_process(delta: float) -> void:
-	_handle_movement(delta)
-	_handle_auto_shoot(delta)
-	_handle_skills(delta)
-	_update_shoot_glow(delta)
+        _handle_movement(delta)
+        _handle_auto_shoot(delta)
+        _handle_skills(delta)
+        _update_shoot_glow(delta)
 
 
 # -------- POHYB --------
 func _handle_movement(_delta: float) -> void:
-	var dir := Vector2.ZERO
+        var dir := _get_move_direction()
 
-	dir.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	dir.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+        if dir.length() > 0.0 and _sprite and dir.x != 0.0:
+                _sprite.flip_h = dir.x < 0.0
 
-	if dir.length() > 0.0:
-		dir = dir.normalized()
+        velocity = dir * move_speed
+        move_and_slide()
 
-		# flip sprity podle směru na X ose
-		if _sprite and dir.x != 0.0:
-			_sprite.flip_h = dir.x < 0.0
 
-	velocity = dir * speed
-	move_and_slide()
+func _get_move_direction() -> Vector2:
+        var dir := Vector2.ZERO
+        dir.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+        dir.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+
+        return dir.normalized() if dir.length() > 0.0 else Vector2.ZERO
 
 
 # -------- AUTOSHOOT (ZÁKLADNÍ STŘELBA) --------
 func _handle_auto_shoot(delta: float) -> void:
-	_time_since_shot += delta
-	if _time_since_shot < fire_cooldown:
-		return
+        _time_since_shot += delta
+        if _time_since_shot < fire_cooldown:
+                return
 
 	var target := _get_closest_enemy(auto_target_radius)
 	if target == null:
@@ -128,8 +182,8 @@ func _get_closest_enemy(max_distance: float) -> Node2D:
 
 
 func _shoot_bullet(target_pos: Vector2) -> void:
-	if _bullet_scene == null:
-		return
+        if _bullet_scene == null:
+                return
 
 	var bullet := _bullet_scene.instantiate()
 	var world := get_tree().current_scene
@@ -137,11 +191,11 @@ func _shoot_bullet(target_pos: Vector2) -> void:
 
 	bullet.global_position = global_position
 
-	var dir: Vector2 = target_pos - global_position
+        var dir: Vector2 = target_pos - global_position
 
-	if bullet.has_method("set_direction"):
-		bullet.set_direction(dir)
-	if bullet.has_method("set_damage"):
+        if bullet.has_method("set_direction"):
+                bullet.set_direction(dir)
+        if bullet.has_method("set_damage"):
 		bullet.set_damage(attack_damage)
 	if bullet.has_method("set_speed_multiplier"):
 		bullet.set_speed_multiplier(bullet_speed_multiplier)
@@ -151,8 +205,8 @@ func _shoot_bullet(target_pos: Vector2) -> void:
 	if has_split and bullet.has_method("set_split"):
 		bullet.set_split(true, 1)
 
-	if has_pierce or has_split:
-		print("Bullet fired with augments -> pierce:", has_pierce, " split:", has_split)
+        if has_pierce or has_split:
+                print("Bullet fired with augments -> pierce:", has_pierce, " split:", has_split)
 
 	_play_shoot_glow()
 
@@ -258,8 +312,8 @@ func _cast_skill_r() -> void:
 
 # -------- SHOOT GLOW --------
 func _update_shoot_glow(delta: float) -> void:
-	if _shoot_glow == null:
-		return
+        if _shoot_glow == null:
+                return
 	if _shoot_glow_time <= 0.0:
 		return
 
@@ -288,7 +342,7 @@ func _play_shoot_glow() -> void:
 
 # -------- HEALTH / DAMAGE --------
 func take_damage(amount: int) -> void:
-	hp -= amount
+        hp -= amount
 
 	var world := get_tree().current_scene
 	if world.has_method("update_player_health"):
@@ -304,37 +358,56 @@ func _die() -> void:
 
 # -------- STAT UPGRADES --------
 func upgrade_attack_speed() -> void:
-	fire_cooldown *= 0.85
-	if fire_cooldown < min_fire_cooldown:
-		fire_cooldown = min_fire_cooldown
+        loadout.fire_cooldown *= 0.85
+        if loadout.fire_cooldown < loadout.min_fire_cooldown:
+                loadout.fire_cooldown = loadout.min_fire_cooldown
+        _apply_loadout(loadout)
 
 
 func upgrade_attack_damage() -> void:
-	attack_damage += 1
+        loadout.attack_damage += 1
+        _apply_loadout(loadout)
 
 
 func upgrade_max_health() -> void:
-	max_hp += 1
-	hp += 1
-	var world := get_tree().current_scene
-	if world.has_method("update_player_health"):
-		world.update_player_health(hp, max_hp)
+        max_hp += 1
+        hp += 1
+        var world := get_tree().current_scene
+        if world.has_method("update_player_health"):
+                world.update_player_health(hp, max_hp)
 
 
 func upgrade_bullet_speed() -> void:
-	bullet_speed_multiplier *= 1.15
+        loadout.bullet_speed_multiplier *= 1.15
+        _apply_loadout(loadout)
+
+
+func upgrade_movement_speed() -> void:
+        loadout.move_speed *= 1.1
+        _apply_loadout(loadout)
+
+
+func upgrade_pickup_radius() -> void:
+        loadout.pickup_radius_multiplier *= 1.2
+        _apply_loadout(loadout)
 
 
 # -------- AUGMENTY --------
 func add_augment_pierce() -> void:
-	if has_pierce:
-		return
-	has_pierce = true
-	print("AUGMENT ACQUIRED: PIERCE")
+        if has_pierce:
+                return
+        loadout.has_pierce = true
+        _apply_loadout(loadout)
+        print("AUGMENT ACQUIRED: PIERCE")
 
 
 func add_augment_split() -> void:
-	if has_split:
-		return
-	has_split = true
-	print("AUGMENT ACQUIRED: SPLIT")
+        if has_split:
+                return
+        loadout.has_split = true
+        _apply_loadout(loadout)
+        print("AUGMENT ACQUIRED: SPLIT")
+
+
+func get_pickup_radius_multiplier() -> float:
+        return pickup_radius_multiplier
