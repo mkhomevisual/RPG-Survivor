@@ -8,20 +8,10 @@ extends CharacterBody2D  # Player
 @export var shoot_glow_duration: float = 0.12
 @export var auto_target_radius: float = 250.0
 
-# -------- SKILL Q (FROST FIELD) --------
-@export var skill_q_cooldown: float = 2.0
-@export var frost_field_scene: PackedScene = preload("res://Scenes/frost_field.tscn")
-
-# -------- SKILL E (EZREAL R STYLE) --------
-@export var skill_e_cooldown: float = 3.0
-@export var skill_e_damage: int = 8
-@export var skill_e_range: float = 2000.0
-@export var skill_e_scene: PackedScene = preload("res://Scenes/skill_e_projectile.tscn")
-
-# -------- SKILL R (TOWER) --------
-@export var skill_r_cooldown: float = 10.0
-@export var tower_scene: PackedScene = preload("res://Scenes/tower.tscn")
-@export var tower_max_cast_range: float = 500.0
+# -------- SKILLS --------
+@export var skill_q_icon: String = "res://Assets/Skills/q2/Comp 2/Comp 2_00000.png"
+@export var skill_e_icon: String = "res://Assets/Skills/Bullet3.png"
+@export var skill_r_icon: String = "res://Assets/Skills/Tower.png"
 
 # -------- STAV --------
 var attack_damage: int = 1
@@ -35,10 +25,8 @@ var bullet_speed_multiplier: float = 1.0
 var has_pierce: bool = false
 var has_split: bool = false
 
-# Cooldowny skillů
-var _skill_q_cd_left: float = 0.0
-var _skill_e_cd_left: float = 0.0
-var _skill_r_cd_left: float = 0.0
+var skills: Array[SkillBase] = []
+var _skill_slots: Dictionary = {}
 
 # -------- ONREADY --------
 @onready var _bullet_scene: PackedScene = preload("res://Scenes/bullet.tscn")
@@ -49,9 +37,11 @@ var _shoot_glow_time: float = 0.0
 
 
 func _ready() -> void:
-	add_to_group("player")
+        add_to_group("player")
 
-	hp = max_hp
+        hp = max_hp
+
+        _initialize_skills()
 
 	# připravíme glow
 	if _shoot_glow:
@@ -61,8 +51,45 @@ func _ready() -> void:
 		_shoot_glow.modulate = c
 
 	var world := get_tree().current_scene
-	if world.has_method("update_player_health"):
-		world.call_deferred("update_player_health", hp, max_hp)
+        if world.has_method("update_player_health"):
+                world.call_deferred("update_player_health", hp, max_hp)
+
+
+func _initialize_skills() -> void:
+        skills.clear()
+        _skill_slots.clear()
+
+        var frost_skill := SkillFrostField.new()
+        frost_skill.cooldown = 2.0
+        frost_skill.icon_path = skill_q_icon
+        frost_skill.cast_range = 0.0
+        _register_skill("Q", frost_skill)
+
+        var projectile_skill := SkillProjectileE.new()
+        projectile_skill.cooldown = 3.0
+        projectile_skill.icon_path = skill_e_icon
+        projectile_skill.projectile_damage = 8
+        projectile_skill.cast_range = 0.0
+        _register_skill("E", projectile_skill)
+
+        var tower_skill := SkillTower.new()
+        tower_skill.cooldown = 10.0
+        tower_skill.icon_path = skill_r_icon
+        tower_skill.cast_range = 500.0
+        _register_skill("R", tower_skill)
+
+        for skill in skills:
+                skill._emit_cooldown_changed()
+
+
+func _register_skill(slot: String, skill: SkillBase) -> void:
+        if skill == null:
+                return
+
+        add_child(skill)
+        skills.append(skill)
+        _skill_slots[slot] = skill
+        skill.cooldown_changed.connect(_on_skill_cooldown_changed.bind(slot))
 
 
 func _physics_process(delta: float) -> void:
@@ -159,101 +186,49 @@ func _shoot_bullet(target_pos: Vector2) -> void:
 
 # -------- SKILLY (Q / E / R) --------
 func _handle_skills(delta: float) -> void:
-	# cooldown tick
-	if _skill_q_cd_left > 0.0:
-		_skill_q_cd_left -= delta
-	if _skill_e_cd_left > 0.0:
-		_skill_e_cd_left -= delta
-	if _skill_r_cd_left > 0.0:
-		_skill_r_cd_left -= delta
+        _process_skill_cooldowns(delta)
 
-	# Q – frost field na pozici myši
-	if Input.is_action_just_pressed("skill_q") and _skill_q_cd_left <= 0.0:
-		_cast_skill_q()
+        var state := _get_skill_state()
 
-	# E – „Ezreal R“ projectile směrem k myši
-	if Input.is_action_just_pressed("skill_e") and _skill_e_cd_left <= 0.0:
-		_cast_skill_e()
+        if Input.is_action_just_pressed("skill_q"):
+                _try_cast_skill("Q", state)
 
-	# R – tower na pozici myši (s max range)
-	if Input.is_action_just_pressed("skill_r") and _skill_r_cd_left <= 0.0:
-		_cast_skill_r()
+        if Input.is_action_just_pressed("skill_e"):
+                _try_cast_skill("E", state)
+
+        if Input.is_action_just_pressed("skill_r"):
+                _try_cast_skill("R", state)
 
 
-# --- Q: FROST FIELD NA POZICI MYŠI ---
-func _cast_skill_q() -> void:
-	if frost_field_scene == null:
-		return
-
-	_skill_q_cd_left = skill_q_cooldown
-
-	var world := get_tree().current_scene
-	if world == null:
-		return
-
-	var spawn_pos: Vector2 = get_global_mouse_position()
-
-	var field: Area2D = frost_field_scene.instantiate()
-	world.add_child(field)
-	field.global_position = spawn_pos
-
-	print("Skill Q cast at: ", spawn_pos)
+func _process_skill_cooldowns(delta: float) -> void:
+        for skill in skills:
+                if skill == null:
+                        continue
+                skill.process_cooldown(delta)
 
 
-# --- E: EZREAL R PROJEKTIL ---
-func _cast_skill_e() -> void:
-	if skill_e_scene == null:
-		return
-
-	_skill_e_cd_left = skill_e_cooldown
-
-	var world := get_tree().current_scene
-	if world == null:
-		return
-
-	var proj := skill_e_scene.instantiate()
-	world.add_child(proj)
-
-	proj.global_position = global_position
-
-	var mouse_pos: Vector2 = get_global_mouse_position()
-	var dir: Vector2 = mouse_pos - global_position
-
-	if proj.has_method("set_direction"):
-		proj.set_direction(dir)
-	if proj.has_method("set_damage"):
-		proj.set_damage(skill_e_damage)
-	if proj.has_method("set_max_range"):
-		proj.set_max_range(skill_e_range)
-
-	print("Skill E cast dir: ", dir)
+func _get_skill_state() -> Dictionary:
+        return {
+                "player": self,
+                "player_position": global_position,
+                "aim_position": get_global_mouse_position(),
+                "world": get_tree().current_scene
+        }
 
 
-# --- R: SUMMON TOWER ---
-func _cast_skill_r() -> void:
-	if tower_scene == null:
-		return
+func _try_cast_skill(slot: String, state: Dictionary) -> void:
+        if not _skill_slots.has(slot):
+                return
+        var skill: SkillBase = _skill_slots[slot]
+        if skill == null:
+                return
+        skill.try_cast(state)
 
-	_skill_r_cd_left = skill_r_cooldown
 
-	var world := get_tree().current_scene
-	if world == null:
-		return
-
-	var mouse_pos: Vector2 = get_global_mouse_position()
-
-	# omezíme cast range od hráče
-	var dir: Vector2 = mouse_pos - global_position
-	var dist: float = dir.length()
-	if dist > tower_max_cast_range and dist > 0.0:
-		dir = dir.normalized() * tower_max_cast_range
-		mouse_pos = global_position + dir
-
-	var tower: Node2D = tower_scene.instantiate()
-	world.add_child(tower)
-	tower.global_position = mouse_pos
-
-	print("Tower R cast at: ", mouse_pos)
+func _on_skill_cooldown_changed(skill: SkillBase, cooldown_left: float, cooldown_total: float, icon_path: String, slot: String) -> void:
+        var world := get_tree().current_scene
+        if world and world.has_method("update_skill_cooldown"):
+                world.update_skill_cooldown(slot, cooldown_left, cooldown_total, icon_path)
 
 
 # -------- SHOOT GLOW --------

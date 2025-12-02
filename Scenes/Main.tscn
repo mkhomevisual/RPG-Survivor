@@ -48,6 +48,71 @@ offset_bottom = 87.0
 text = "HP: 5/5"
 metadata/_edit_use_anchors_ = true
 
+[node name="SkillPanel" type="MarginContainer" parent="UI"]
+offset_left = 16.0
+offset_top = 96.0
+offset_right = 176.0
+offset_bottom = 144.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="SkillBar" type="HBoxContainer" parent="UI/SkillPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="SkillQ" type="VBoxContainer" parent="UI/SkillPanel/SkillBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Icon" type="TextureRect" parent="UI/SkillPanel/SkillBar/SkillQ"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+expand_mode = 1
+stretch_mode = 3
+
+[node name="CooldownLabel" type="Label" parent="UI/SkillPanel/SkillBar/SkillQ"]
+layout_mode = 2
+text = "Q: Ready"
+horizontal_alignment = 1
+
+[node name="SkillE" type="VBoxContainer" parent="UI/SkillPanel/SkillBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Icon" type="TextureRect" parent="UI/SkillPanel/SkillBar/SkillE"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+expand_mode = 1
+stretch_mode = 3
+
+[node name="CooldownLabel" type="Label" parent="UI/SkillPanel/SkillBar/SkillE"]
+layout_mode = 2
+text = "E: Ready"
+horizontal_alignment = 1
+
+[node name="SkillR" type="VBoxContainer" parent="UI/SkillPanel/SkillBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Icon" type="TextureRect" parent="UI/SkillPanel/SkillBar/SkillR"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+expand_mode = 1
+stretch_mode = 3
+
+[node name="CooldownLabel" type="Label" parent="UI/SkillPanel/SkillBar/SkillR"]
+layout_mode = 2
+text = "R: Ready"
+horizontal_alignment = 1
+
 [node name="LevelUpOverlay" type="ColorRect" parent="UI"]
 visible = false
 z_index = -3
