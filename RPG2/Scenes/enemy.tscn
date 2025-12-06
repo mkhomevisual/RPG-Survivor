@@ -1,0 +1,69 @@
+[gd_scene load_steps=10 format=3 uid="uid://dr22rnpbongxl"]
+
+[ext_resource type="Script" uid="uid://bbsvelfgc6oyb" path="res://Scripts/enemy.gd" id="1_1f0kj"]
+[ext_resource type="Shader" uid="uid://db86ckfivu8uh" path="res://Assets/Shaders/enemy_hit_flash.gdshader" id="2_ghaa6"]
+[ext_resource type="Texture2D" uid="uid://bg6atlxg2f51" path="res://Scenes/bat2.png" id="3_0830c"]
+[ext_resource type="Texture2D" uid="uid://dsabn1menr232" path="res://Scenes/bat3.png" id="4_ghaa6"]
+[ext_resource type="Texture2D" uid="uid://bcc4lr64mepjh" path="res://Assets/Enemy/White-Shadow.png" id="5_0830c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1f0kj"]
+size = Vector2(107.203, 54.7945)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_287tu"]
+resource_local_to_scene = true
+shader = ExtResource("2_ghaa6")
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1dp5w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_0830c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ghaa6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_afpow"]
+size = Vector2(87.7915, 40.9207)
+
+[node name="Enemy" type="CharacterBody2D" groups=["enemy"]]
+scale = Vector2(0.15, 0.15)
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_1f0kj")
+speed = 50.0
+max_hp = 1
+knockback_force = 250.0
+knockback_friction = 1200.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.58946e-06, 0)
+scale = Vector2(1.33, 1.952)
+shape = SubResource("RectangleShape2D_1f0kj")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_287tu")
+scale = Vector2(0.35, 0.35)
+sprite_frames = SubResource("SpriteFrames_1dp5w")
+autoplay = "default"
+frame = 1
+frame_progress = 0.564966
+
+[node name="DamageArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(-2.98023e-07, -1.58946e-06)
+scale = Vector2(1.615, 2.599)
+shape = SubResource("RectangleShape2D_afpow")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+z_index = -4
+position = Vector2(0, 80)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("5_0830c")

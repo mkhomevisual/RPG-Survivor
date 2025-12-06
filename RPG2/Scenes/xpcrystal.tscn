@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://d10dmse83ado3"]
+
+[ext_resource type="Script" uid="uid://c16n7ca78aucj" path="res://Scripts/xpcrystal.gd" id="1_17wxw"]
+[ext_resource type="Texture2D" uid="uid://cdst6sg5fw378" path="res://Assets/XP/jewellery.svg" id="1_y40eb"]
+[ext_resource type="Texture2D" uid="uid://bcc4lr64mepjh" path="res://Assets/Enemy/White-Shadow.png" id="3_50cgn"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_50cgn"]
+
+[node name="XPCrystal" type="Area2D"]
+scale = Vector2(0.025, 0.025)
+script = ExtResource("1_17wxw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.585, 0.585)
+texture = ExtResource("1_y40eb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(10, 10)
+shape = SubResource("CapsuleShape2D_50cgn")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("3_50cgn")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+rotation = 1.5708
+scale = Vector2(1, 0.2)
+texture = ExtResource("3_50cgn")

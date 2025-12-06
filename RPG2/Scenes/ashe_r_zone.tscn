@@ -1,0 +1,117 @@
+[gd_scene load_steps=20 format=3 uid="uid://csotopsrkaukj"]
+
+[ext_resource type="Script" uid="uid://c74j66mwy2le4" path="res://Scripts/ashe_r_zone.gd" id="1_m1wop"]
+[ext_resource type="Texture2D" uid="uid://cmcfj7im5qtrv" path="res://Assets/Player/Char2/Comp 1/Comp 1_00000.png" id="2_j2rm1"]
+[ext_resource type="Texture2D" uid="uid://yvopkcyy40v" path="res://Assets/Player/Char2/Comp 1/Comp 1_00001.png" id="3_brygr"]
+[ext_resource type="Texture2D" uid="uid://do7eep80sird" path="res://Assets/Player/Char2/Comp 1/Comp 1_00002.png" id="4_udbyj"]
+[ext_resource type="Texture2D" uid="uid://c605f8vfbqatq" path="res://Assets/Player/Char2/Comp 1/Comp 1_00003.png" id="5_4egfv"]
+[ext_resource type="Texture2D" uid="uid://bsyxekfqmf36a" path="res://Assets/Player/Char2/Comp 1/Comp 1_00004.png" id="6_wrb45"]
+[ext_resource type="Texture2D" uid="uid://cao28era0cokl" path="res://Assets/Player/Char2/Comp 1/Comp 1_00005.png" id="7_1nxvq"]
+[ext_resource type="Texture2D" uid="uid://cp3dhksd85dh2" path="res://Assets/Player/Char2/Comp 1/Comp 1_00006.png" id="8_wi3jj"]
+[ext_resource type="Texture2D" uid="uid://bv07futvesmse" path="res://Assets/Player/Char2/Comp 1/Comp 1_00007.png" id="9_asqkg"]
+[ext_resource type="Texture2D" uid="uid://ctghd4r0xpy62" path="res://Assets/Player/Char2/Comp 1/Comp 1_00008.png" id="10_bvpl2"]
+[ext_resource type="Texture2D" uid="uid://c4b73mt5jdmmn" path="res://Assets/Player/Char2/Comp 1/Comp 1_00009.png" id="11_e567y"]
+[ext_resource type="Texture2D" uid="uid://2p62bt6q5gg4" path="res://Assets/Player/Char2/Comp 1/Comp 1_00010.png" id="12_lebqa"]
+[ext_resource type="Texture2D" uid="uid://chb1os53q8suv" path="res://Assets/Player/Char2/Comp 1/Comp 1_00011.png" id="13_ylj2r"]
+[ext_resource type="Texture2D" uid="uid://dktrnlxpfgwye" path="res://Assets/Player/Char2/Comp 1/Comp 1_00012.png" id="14_e165h"]
+[ext_resource type="Texture2D" uid="uid://dulb28veriuh3" path="res://Assets/Player/Char2/Comp 1/Comp 1_00013.png" id="15_jju0y"]
+[ext_resource type="Texture2D" uid="uid://c4o6dpq1e8jrc" path="res://Assets/Player/Char2/Comp 1/Comp 1_00014.png" id="16_pcgie"]
+[ext_resource type="Texture2D" uid="uid://bludqfruf0uto" path="res://Assets/Player/Char2/Comp 1/Comp 1_00015.png" id="17_vyuma"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2urus"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_513te"]
+animations = [{
+"frames": [{
+"duration": 0.2,
+"texture": ExtResource("2_j2rm1")
+}, {
+"duration": 0.2,
+"texture": ExtResource("3_brygr")
+}, {
+"duration": 0.2,
+"texture": ExtResource("4_udbyj")
+}, {
+"duration": 0.2,
+"texture": ExtResource("5_4egfv")
+}, {
+"duration": 0.2,
+"texture": ExtResource("6_wrb45")
+}, {
+"duration": 0.2,
+"texture": ExtResource("7_1nxvq")
+}, {
+"duration": 0.2,
+"texture": ExtResource("8_wi3jj")
+}, {
+"duration": 0.2,
+"texture": ExtResource("9_asqkg")
+}, {
+"duration": 0.2,
+"texture": ExtResource("10_bvpl2")
+}, {
+"duration": 0.2,
+"texture": ExtResource("11_e567y")
+}, {
+"duration": 0.2,
+"texture": ExtResource("12_lebqa")
+}, {
+"duration": 0.2,
+"texture": ExtResource("13_ylj2r")
+}, {
+"duration": 0.2,
+"texture": ExtResource("14_e165h")
+}, {
+"duration": 0.2,
+"texture": ExtResource("15_jju0y")
+}, {
+"duration": 0.2,
+"texture": ExtResource("16_pcgie")
+}, {
+"duration": 0.2,
+"texture": ExtResource("17_vyuma")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="AsheRZone" type="Area2D"]
+z_index = -150
+script = ExtResource("1_m1wop")
+
+[node name="Node2D" type="Node2D" parent="."]
+scale = Vector2(0.75, 0.75)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D"]
+scale = Vector2(20, 20)
+shape = SubResource("CircleShape2D_2urus")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Node2D"]
+scale = Vector2(0.74, 0.74)
+sprite_frames = SubResource("SpriteFrames_513te")
+autoplay = "default"
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="Node2D"]
+scale = Vector2(0.74, 0.74)
+sprite_frames = SubResource("SpriteFrames_513te")
+autoplay = "default"
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Node2D"]
+scale = Vector2(1.88679, 1.88679)
+amount = 80
+emission_shape = 1
+emission_sphere_radius = 105.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 40.0
+angular_velocity_min = 10.0
+angular_velocity_max = 10.0
+radial_accel_max = 100.0
+scale_amount_min = 0.5

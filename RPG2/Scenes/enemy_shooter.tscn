@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=3 uid="uid://tkq7s05faq21"]
+
+[ext_resource type="Script" uid="uid://cmeeelt7h0623" path="res://Scripts/enemy_shooter.gd" id="1_mjlx5"]
+[ext_resource type="Texture2D" uid="uid://mmbhtuiidgra" path="res://Assets/Enemy/acolyte.png" id="2_mjlx5"]
+[ext_resource type="Texture2D" uid="uid://c173txgnwwiby" path="res://Assets/Enemy/1.png" id="2_o3wd0"]
+[ext_resource type="Texture2D" uid="uid://xnmvc6lv5hil" path="res://Assets/Enemy/Scalovatko.png" id="3_57vpb"]
+[ext_resource type="Texture2D" uid="uid://btef7y2c2vltj" path="res://Assets/Enemy/2.png" id="3_jmgf5"]
+[ext_resource type="Texture2D" uid="uid://d037rsrdoox0c" path="res://Assets/Enemy/3.png" id="4_puwpe"]
+[ext_resource type="Shader" uid="uid://db86ckfivu8uh" path="res://Assets/Shaders/enemy_hit_flash.gdshader" id="5_jmgf5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lciyv"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": ExtResource("2_o3wd0")
+}, {
+"duration": 2.0,
+"texture": ExtResource("3_jmgf5")
+}, {
+"duration": 2.0,
+"texture": ExtResource("4_puwpe")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_puwpe"]
+shader = ExtResource("5_jmgf5")
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_57vpb"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.4, 0.4)
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_mjlx5")
+shoot_interval = 6.0
+shoot_range = 150.0
+projectile_speed = 20.0
+knockback_force = 400.0
+knockback_friction = 1200.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_lciyv")
+autoplay = "default"
+frame_progress = 0.452693
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_puwpe")
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_mjlx5")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="DamageArea" type="CollisionShape2D" parent="Area2D" groups=["enemy_damage"]]
+position = Vector2(-7.86, 0)
+scale = Vector2(1.97, 2.61)
+shape = SubResource("CapsuleShape2D_57vpb")
+
+[node name="DamageArea2" type="CollisionShape2D" parent="." groups=["enemy_damage"]]
+position = Vector2(-7.86, 0)
+scale = Vector2(1.97, 2.61)
+shape = SubResource("CapsuleShape2D_57vpb")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_57vpb")

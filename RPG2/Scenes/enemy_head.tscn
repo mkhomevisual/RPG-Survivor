@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3s4163aar1dj"]
+
+[ext_resource type="Script" uid="uid://co02ue20a10q2" path="res://Scripts/enemy_tank.gd" id="1_kmqb8"]
+[ext_resource type="Texture2D" uid="uid://csc2sp2dpc5ew" path="res://Assets/Enemy/tank.png" id="2_3r523"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u705e"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.15, 0.15)
+script = ExtResource("1_kmqb8")
+speed = 5.0
+attack_cooldown = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_3r523")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="DamageArea3" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(9.82, 9.84)
+shape = SubResource("CircleShape2D_u705e")
+
+[node name="DamageArea2" type="CollisionShape2D" parent="."]
+scale = Vector2(9.82, 9.84)
+shape = SubResource("CircleShape2D_u705e")

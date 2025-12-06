@@ -1,0 +1,81 @@
+[gd_scene load_steps=10 format=3 uid="uid://b6vkmwji08gff"]
+
+[ext_resource type="Script" uid="uid://co02ue20a10q2" path="res://Scripts/enemy_tank.gd" id="1_44s6k"]
+[ext_resource type="Shader" uid="uid://db86ckfivu8uh" path="res://Assets/Shaders/enemy_hit_flash.gdshader" id="2_rels8"]
+[ext_resource type="Texture2D" uid="uid://cjvfcbjvq26r4" path="res://Scenes/tank1.png" id="3_2ro7y"]
+[ext_resource type="Texture2D" uid="uid://cfga4lj6uaro4" path="res://Scenes/tank2.png" id="4_pnw4e"]
+[ext_resource type="Texture2D" uid="uid://jejmdukbpv1i" path="res://Scenes/tank3.png" id="5_ioseo"]
+[ext_resource type="Texture2D" uid="uid://d5803eytymo4" path="res://Scenes/tank4.png" id="6_ijyga"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cbe8q"]
+shader = ExtResource("2_rels8")
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qqj2f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_2ro7y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_pnw4e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ioseo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ijyga")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u705e"]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.2, 0.2)
+collision_layer = 2
+collision_mask = 9
+script = ExtResource("1_44s6k")
+knockback_force = 250.0
+knockback_friction = 1200.0
+attack_cooldown = 2.0
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_cbe8q")
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_qqj2f")
+autoplay = "default"
+frame_progress = 0.253383
+
+[node name="Area2D" type="Area2D" parent="."]
+visible = false
+
+[node name="DamageArea3" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(9.82, 9.84)
+shape = SubResource("CircleShape2D_u705e")
+
+[node name="DamageArea2" type="CollisionShape2D" parent="."]
+visible = false
+scale = Vector2(9.82, 9.84)
+shape = SubResource("CircleShape2D_u705e")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(-53.3333, -40)
+amount = 10
+lifetime = 0.5
+spread = 44.75
+gravity = Vector2(0, 0)
+color = Color(0.992157, 0.00784314, 0.0117647, 1)
+
+[node name="CPUParticles2D2" type="CPUParticles2D" parent="."]
+visible = false
+position = Vector2(-26.6667, -40)
+amount = 5
+lifetime = 0.5
+speed_scale = 0.2
+spread = 44.75
+gravity = Vector2(0, -50)
+color = Color(0.992157, 0.00784314, 0.0117647, 1)

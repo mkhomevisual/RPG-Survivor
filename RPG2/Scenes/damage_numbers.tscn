@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bb0146qljtq6l"]
+
+[ext_resource type="Script" uid="uid://cibyq0ucd22xu" path="res://Scripts/damage_numbers.gd" id="1_2jiao"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2jiao"]
+font_size = 15
+font_color = Color(0.87451, 0, 0, 1)
+
+[node name="DamageNumber" type="Node2D"]
+script = ExtResource("1_2jiao")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 96.0
+offset_bottom = 137.0
+text = "11"
+label_settings = SubResource("LabelSettings_2jiao")
